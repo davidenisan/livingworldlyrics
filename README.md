@@ -61,6 +61,7 @@ Required env vars:
 - `ADMIN_USERNAME`
 - `ADMIN_PASSWORD_HASH`
 - `JWT_SECRET`
+- `DB_PATH` (recommended in production, points SQLite at persistent storage)
 - `PORT` (optional, default `3001`)
 
 ## Install and Run
@@ -84,6 +85,37 @@ npm run dev:frontend
 ```
 
 Frontend runs on Vite default port (`5173`) and proxies `/api` to backend `3001`.
+
+## Render Deploy
+
+Use the root project as one Node web service. The backend serves the built frontend from `frontend/dist`.
+
+Recommended settings:
+
+```text
+Build Command: npm run render-build
+Start Command: npm start
+```
+
+Do not remove `package-lock.json` during the build. The build script installs backend dependencies and installs frontend dependencies with dev tools included so Vite is available.
+
+Set these Render environment variables:
+
+```text
+NODE_ENV=production
+ADMIN_USERNAME=your_admin_name
+ADMIN_PASSWORD_HASH=your_generated_bcrypt_hash
+JWT_SECRET=a_long_random_secret
+DB_PATH=/opt/render/project/src/storage/lyrics.db
+```
+
+Add a Render persistent disk mounted at:
+
+```text
+/opt/render/project/src/storage
+```
+
+SQLite must live on persistent storage in production, otherwise redeploys can lose the library database.
 
 ## Database Migration
 
